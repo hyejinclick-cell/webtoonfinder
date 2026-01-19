@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹툰 숏폼 파인더</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-black min-h-screen">
+    <!-- Header -->
+    <header class="bg-black border-b border-gray-800 sticky top-0 z-50">
+        <div class="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-gradient-to-br from-green-400 to-green-600 rounded flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                </div>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+            </svg>
+        </div>
+    </header>
+
+    <div class="max-w-screen-xl mx-auto px-4 py-6">
+        <!-- Main Search Section -->
+        <div class="mb-6">
+            <h2 class="text-white text-2xl font-bold mb-2">웹툰 숏폼 찾기</h2>
+            <p class="text-gray-400 text-sm mb-4">좋아하는 웹툰의 숏폼을 검색하세요</p>
+            
+            <div class="relative">
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="웹툰 제목 입력"
+                    class="w-full bg-gray-900 text-white border border-gray-800 rounded-lg px-4 py-3 pr-12 focus:outline-none focus:border-green-500 transition-colors"
+                />
+                <button 
+                    onclick="handleSearch()"
+                    class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-green-500 hover:bg-green-600 text-white rounded-lg px-4 py-1.5 text-sm font-medium transition-colors"
+                >
+                    검색
+                </button>
+            </div>
+        </div>
+
+        <!-- Quick Keywords -->
+        <div class="mb-6">
+            <h3 class="text-gray-400 text-sm mb-3">인기 웹툰</h3>
+            <div class="flex flex-wrap gap-2" id="keywords">
+                <!-- Keywords will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Platform Selection -->
+        <div class="mb-6">
+            <h3 class="text-white text-lg font-bold mb-4">플랫폼 선택</h3>
+            <div class="grid grid-cols-3 gap-3" id="platforms">
+                <!-- Platforms will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Search Button -->
+        <button
+            onclick="handleSearch()"
+            class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl transition-all transform active:scale-98 shadow-lg"
+            id="mainSearchBtn"
+        >
+            유튜브에서 검색하기
+        </button>
+
+        <!-- Info -->
+        <div class="mt-6 bg-gray-900 border border-gray-800 rounded-xl p-4">
+            <div class="flex gap-2">
+                <div class="text-green-500 font-bold">💡</div>
+                <div>
+                    <p class="text-gray-400 text-sm">
+                        검색 버튼을 누르면 선택한 플랫폼의 새 탭이 열립니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let activeTab = 'youtube';
+        
+        const tabs = [
+            { 
+                id: 'youtube', 
+                name: '유튜브', 
+                icon: '<circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon>',
+                color: '#FF0000'
+            },
+            { 
+                id: 'instagram', 
+                name: '인스타그램', 
+                icon: '<rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>',
+                color: '#E4405F'
+            },
+            { 
+                id: 'tiktok', 
+                name: '틱톡', 
+                icon: '<path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>',
+                color: '#000000'
+            }
+        ];
+
+        const popularWebtoons = [
+            '외모지상주의', '신의탑', '나혼자만레벨업', 
+            '유미의세포들', '윈드브레이커', '전지적독자시점'
+        ];
+
+        function initKeywords() {
+            const container = document.getElementById('keywords');
+            popularWebtoons.forEach(webtoon => {
+                const btn = document.createElement('button');
+                btn.className = 'bg-gray-900 hover:bg-gray-800 text-gray-300 hover:text-white border border-gray-800 hover:border-gray-700 rounded-full px-4 py-2 text-sm transition-all';
+                btn.textContent = '#' + webtoon;
+                btn.onclick = () => {
+                    document.getElementById('searchInput').value = webtoon;
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function initPlatforms() {
+            const container = document.getElementById('platforms');
+            tabs.forEach(tab => {
+                const btn = document.createElement('button');
+                btn.className = `relative p-4 rounded-xl transition-all ${
+                    activeTab === tab.id 
+                        ? 'bg-gray-800 ring-2 ring-green-500' 
+                        : 'bg-gray-900 hover:bg-gray-850'
+                }`;
+                btn.onclick = () => selectPlatform(tab.id);
+                
+                btn.innerHTML = `
+                    <div class="flex flex-col items-center gap-2">
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: ${activeTab === tab.id ? tab.color : '#1f2937'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                ${tab.icon}
+                            </svg>
+                        </div>
+                        <span class="text-sm font-medium ${activeTab === tab.id ? 'text-white' : 'text-gray-400'}">
+                            ${tab.name}
+                        </span>
+                    </div>
+                    ${activeTab === tab.id ? '<div class="absolute top-2 right-2 w-2 h-2 bg-green-500 rounded-full"></div>' : ''}
+                `;
+                
+                container.appendChild(btn);
+            });
+        }
+
+        function selectPlatform(tabId) {
+            activeTab = tabId;
+            document.getElementById('platforms').innerHTML = '';
+            initPlatforms();
+            updateSearchButton();
+        }
+
+        function updateSearchButton() {
+            const btn = document.getElementById('mainSearchBtn');
+            const tabName = tabs.find(t => t.id === activeTab)?.name || '유튜브';
+            btn.textContent = `${tabName}에서 검색하기`;
+        }
+
+        function handleSearch() {
+            const searchQuery = document.getElementById('searchInput').value.trim();
+            
+            if (!searchQuery) {
+                alert('웹툰 제목을 입력해주세요!');
+                return;
+            }
+
+            const query = encodeURIComponent(`${searchQuery} 웹툰`);
+            let url = '';
+
+            switch(activeTab) {
+                case 'youtube':
+                    url = `https://www.youtube.com/results?search_query=${query}+shorts`;
+                    break;
+                case 'instagram':
+                    // 인스타그램은 웹에서 직접 릴스 검색 URL이 제한적이므로 해시태그로 연결
+                    url = `https://www.instagram.com/explore/search/keyword/?q=${encodeURIComponent(searchQuery + ' 웹툰')}`;
+                    break;
+                case 'tiktok':
+                    url = `https://www.tiktok.com/search?q=${query}`;
+                    break;
+            }
+
+            window.open(url, '_blank');
+        }
+
+        // Enter key support
+        document.addEventListener('DOMContentLoaded', function() {
+            initKeywords();
+            initPlatforms();
+            
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleSearch();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -77,9 +77,9 @@
                 } else if (activeTab === 'instagram') {
                     url = `https://www.instagram.com/explore/tags/${encodeURIComponent(searchQuery)}/`;
                 } else if (activeTab === 'tiktok') {
-                    // 틱톡은 해시태그 방식이 모바일에서 더 잘 작동 (공백 제거)
+                    // 틱톡은 해시태그 방식 (공백 제거, 웹툰 키워드 제외)
                     const cleanQuery = searchQuery.replace(/\s+/g, '');
-                    url = `https://www.tiktok.com/tag/${encodeURIComponent(cleanQuery)}웹툰`;
+                    url = `https://www.tiktok.com/tag/${encodeURIComponent(cleanQuery)}`;
                 }
 
                 if (url) window.open(url, '_blank');

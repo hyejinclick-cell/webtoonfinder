@@ -77,8 +77,9 @@
                 } else if (activeTab === 'instagram') {
                     url = `https://www.instagram.com/explore/tags/${encodeURIComponent(searchQuery)}/`;
                 } else if (activeTab === 'tiktok') {
-                    const query = encodeURIComponent(`${searchQuery} 웹툰`);
-                    url = `https://www.tiktok.com/search/video?q=${query}`;
+                    // 틱톡 검색 - 모바일과 PC 모두 지원
+                    const query = encodeURIComponent(searchQuery);
+                    url = `https://www.tiktok.com/search?q=${query}`;
                 }
 
                 if (url) window.open(url, '_blank');
